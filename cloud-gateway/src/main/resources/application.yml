@@ -1,0 +1,28 @@
+server:
+  port: 9191
+
+
+eureka:
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+  instance:
+    hostname: localhost
+
+spring:
+  application:
+    name: API-GATEWAY
+  cloud:
+    gateway:
+      routes:
+        - id: SHOPPING-SERVICE
+          uri: lb://SHOPPING-SERVICE
+          predicates:
+            - Path=/api/v1/**
+          filters:
+            - name: CircuitBreaker
+              args:
+                name: SHOPPING-SERVICE
+                fallbackuri: forward:/shoppingServiceFallback
